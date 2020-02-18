@@ -1,0 +1,10 @@
+HTM Experiments
+---------------
+
+Original ANSI C implementation can be found here:
+
+https://github.com/binarybarry/HTM-Camera-Toolkit
+
+OpenMP version can be found in src/openmp
+OpenACC version can be found in src/openacc
+
