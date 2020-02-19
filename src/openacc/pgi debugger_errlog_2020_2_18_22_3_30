@@ -1,0 +1,74 @@
+PGI Debugger error detected at 22:3:30, 2/18/2020
+==================================================
+PGI Release 19.10 (2019.1031)
+==================================================
+null
+==================================================
+java.lang.reflect.InvocationTargetException
+	at java.desktop/java.awt.EventQueue.invokeAndWait(EventQueue.java:1367)
+	at java.desktop/java.awt.EventQueue.invokeAndWait(EventQueue.java:1342)
+	at java.desktop/javax.swing.SwingUtilities.invokeAndWait(SwingUtilities.java:1480)
+	at jpgdbg.main(jpgdbg.java:995)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+	at java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:566)
+	at SplashLoader$1.run(SplashLoader.java:67)
+	at java.base/java.lang.Thread.run(Thread.java:834)
+Caused by: java.lang.NoClassDefFoundError: sun/reflect/Reflection
+	at com.jidesoft.plaf.UIDefaultsLookup.getCallerClassLoader(Unknown Source)
+	at com.jidesoft.plaf.UIDefaultsLookup.get(Unknown Source)
+	at com.jidesoft.plaf.basic.BasicDockableFrameUI.installDefaults(Unknown Source)
+	at com.jidesoft.plaf.basic.BasicDockableFrameUI.installUI(Unknown Source)
+	at java.desktop/javax.swing.JComponent.setUI(JComponent.java:685)
+	at com.jidesoft.docking.DockableFrame.setUI(Unknown Source)
+	at com.jidesoft.docking.DockableFrame.updateUI(Unknown Source)
+	at com.jidesoft.docking.DockableFrame.<init>(Unknown Source)
+	at com.jidesoft.docking.DockableFrame.<init>(Unknown Source)
+	at Tab.initializeFrame(Tab.java:219)
+	at Tab.<init>(Tab.java:84)
+	at JpgdbgConnections.<init>(JpgdbgConnections.java:214)
+	at jpgdbg.<init>(jpgdbg.java:385)
+	at jpgdbg$4.run(jpgdbg.java:998)
+	at java.desktop/java.awt.event.InvocationEvent.dispatch(InvocationEvent.java:303)
+	at java.desktop/java.awt.EventQueue.dispatchEventImpl(EventQueue.java:770)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:721)
+	at java.desktop/java.awt.EventQueue$4.run(EventQueue.java:715)
+	at java.base/java.security.AccessController.doPrivileged(Native Method)
+	at java.base/java.security.ProtectionDomain$JavaSecurityAccessImpl.doIntersectionPrivilege(ProtectionDomain.java:85)
+	at java.desktop/java.awt.EventQueue.dispatchEvent(EventQueue.java:740)
+	at java.desktop/java.awt.EventDispatchThread.pumpOneEventForFilters(EventDispatchThread.java:203)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForFilter(EventDispatchThread.java:124)
+	at java.desktop/java.awt.EventDispatchThread.pumpEventsForHierarchy(EventDispatchThread.java:113)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:109)
+	at java.desktop/java.awt.EventDispatchThread.pumpEvents(EventDispatchThread.java:101)
+	at java.desktop/java.awt.EventDispatchThread.run(EventDispatchThread.java:90)
+Caused by: java.lang.ClassNotFoundException: sun.reflect.Reflection
+	at java.base/jdk.internal.loader.BuiltinClassLoader.loadClass(BuiltinClassLoader.java:581)
+	at java.base/jdk.internal.loader.ClassLoaders$AppClassLoader.loadClass(ClassLoaders.java:178)
+	at java.base/java.lang.ClassLoader.loadClass(ClassLoader.java:521)
+	... 27 more
+==================================================
+Java Properties:
+java.version: 11.0.6
+sun.arch.data.model: 64
+java.home: /usr/lib/jvm/java-11-openjdk-amd64
+os.arch: amd64
+os.name: Linux
+os.version: 4.15.0-76-generic
+java.vm.version: 11.0.6+10-post-Ubuntu-1ubuntu118.04.1
+java.vm.vendor: Ubuntu
+java.vm.name: OpenJDK 64-Bit Server VM
+java.class.path: /opt/pgi/linux86-64-llvm/19.10/bin/jpgdbg.jar::/opt/pgi/linux86-64-llvm/19.10/bin/PGcomp.jar:/opt/pgi/linux86-64-llvm/19.10/bin/PGlaf.jar:/opt/pgi/linux86-64-llvm/19.10/bin/PGutil.jar:/opt/pgi/linux86-64-llvm/19.10/bin/jide-common.jar:/opt/pgi/linux86-64-llvm/19.10/bin/jide-dock.jar:/opt/pgi/linux86-64-llvm/19.10/bin/rsyntaxtextarea.jar:/opt/pgi/linux86-64-llvm/19.10/bin/ganymed-ssh2-build251.jar:/opt/pgi/linux86-64-llvm/19.10/bin/balloontip.jar
+java.ext.dirs: null
+java.library.path: /usr/java/packages/lib:/usr/lib/x86_64-linux-gnu/jni:/lib/x86_64-linux-gnu:/usr/lib/x86_64-linux-gnu:/usr/lib/jni:/lib:/usr/lib
+sun.boot.class.path: null
+sun.boot.library.path: /usr/lib/jvm/java-11-openjdk-amd64/lib
+==================================================
+pgdbg-specific error log
+------------------------------------
+ptConsole null, no status
+gui/pgdbg message log - oldest first
+------------------------------------
+------------------------------------
+==================================================

@@ -48,13 +48,21 @@ typedef struct SegmentType {
 
 } Segment;
 
+#pragma acc routine
 void initSegment(Segment* seg, int segActiveThreshold);
+#pragma acc routine
 void deleteSegment(Segment* seg);
+#pragma acc routine
 void nextSegmentTimeStep(Segment* seg);
+#pragma acc routine
 void processSegment(Segment* seg);
+#pragma acc routine
 void setNumPredictionSteps(Segment* seg, int steps);
+#pragma acc routine
 Synapse* createSynapse(Segment* seg, struct CellType* inputSource, int initPerm);
+#pragma acc routine
 void updateSegmentPermanences(Segment* seg, bool increase);
+#pragma acc routine
 bool wasSegmentActiveFromLearning(Segment* seg);
 
 #endif /* SEGMENT_H_ */

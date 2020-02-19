@@ -33,7 +33,8 @@ void initSynapse(Synapse* syn, Cell* inputSource, int permanence) {
  * Return true if this Synapse is active due to the current input.
  * @param connectedOnly: only consider if active if this synapse is connected.
  */
-bool isSynapseActive(Synapse* syn, bool connectedOnly) {
+#pragma acc routine seq
+inline bool isSynapseActive(Synapse* syn, bool connectedOnly) {
   return syn->inputSource->isActive && (syn->isConnected || !connectedOnly);
 }
 
@@ -41,7 +42,8 @@ bool isSynapseActive(Synapse* syn, bool connectedOnly) {
  * Return true if this Synapse was active due to the previous input at t-1.
  * @param connectedOnly: only consider if active if this synapse is connected.
  */
-bool wasSynapseActive(Synapse* syn, bool connectedOnly) {
+#pragma acc routine
+inline bool wasSynapseActive(Synapse* syn, bool connectedOnly) {
   return syn->inputSource->wasActive && (syn->wasConnected || !connectedOnly);
 }
 
@@ -49,14 +51,16 @@ bool wasSynapseActive(Synapse* syn, bool connectedOnly) {
  * Return true if this Synapse was active due to the input previously being
  * in a learning state.
  */
-bool wasSynapseActiveFromLearning(Synapse* syn) {
+#pragma acc routine
+inline bool wasSynapseActiveFromLearning(Synapse* syn) {
   return wasSynapseActive(syn,true) && syn->inputSource->wasLearning;
 }
 
 /**
  * Increases the permanence of this synapse.
  */
-void increaseSynapsePermanence(Synapse* syn, int amount) {
+#pragma acc routine
+inline void increaseSynapsePermanence(Synapse* syn, int amount) {
   if(amount==0)
     amount = PERMANENCE_INC;
   syn->permanence = min(MAX_PERM, syn->permanence+amount);
@@ -65,7 +69,8 @@ void increaseSynapsePermanence(Synapse* syn, int amount) {
 /**
  * Decreases the permanence of this synapse.
  */
-void decreaseSynapsePermanence(Synapse* syn, int amount) {
+#pragma acc routine
+inline void decreaseSynapsePermanence(Synapse* syn, int amount) {
   if(amount==0)
     amount = PERMANENCE_DEC;
   syn->permanence = max(0, syn->permanence-amount);

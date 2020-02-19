@@ -51,10 +51,12 @@ void deleteCell(Cell* cell);
 void setCellPredicting(Cell* cell, bool predicting);
 int numCellSegments(Cell* cell, int predictionSteps);
 void nextCellTimeStep(Cell* cell);
+#pragma acc routine
 Segment* createCellSegment(Cell* cell);
 Segment* getPreviousActiveSegment(Cell* cell);
 SegmentUpdateInfo* updateSegmentActiveSynapses(Cell* cell, bool previous,
     int segmentID, bool newSynapses);
+#pragma acc routine
 void applyCellSegmentUpdates(Cell* cell, bool positiveReinforcement);
 Segment* getBestMatchingPreviousSegment(Cell* cell, int* segmentID);
 Segment* getBestMatchingSegment(Cell* cell, int numPredictionSteps,

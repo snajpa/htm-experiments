@@ -51,6 +51,7 @@ void randomSample(Cell** cells, int n, Cell** ssCells, int m) {
 /**
  * Allocate a new SegmentUpdateInfo using the given parameters.
  */
+#pragma acc routine
 void initSegmentUpdateInfo(SegmentUpdateInfo* info, Cell* cell, int segmentID,
     bool previous, bool addNewSynapses) {
   info->activeSynapseIDs = NULL;
@@ -149,8 +150,9 @@ void initSegmentUpdateInfo(SegmentUpdateInfo* info, Cell* cell, int segmentID,
               /*printf("learningCell added (%d,%d) %d\n", x, y, i);
               //if array is full, need to increase capacity to add more*/
               if(numLearnCells == allocatedLearnCells) {
+		free(learningCells);
                 int newAllocation = allocatedLearnCells*2;
-                learningCells = realloc(learningCells, newAllocation * sizeof(Cell*));
+                learningCells = malloc(newAllocation * sizeof(Cell*));
                 allocatedLearnCells = newAllocation;
               }
               learningCells[numLearnCells] = cell;
@@ -184,6 +186,7 @@ void initSegmentUpdateInfo(SegmentUpdateInfo* info, Cell* cell, int segmentID,
  * structure.  In this case, free the array of learningCells and activeSynapses that
  * were allocated.  This function does NOT free the SegmentUpdateInfo itself.
  */
+#pragma acc routine
 void deleteSegmentUpdateInfo(SegmentUpdateInfo* info) {
   if(info->activeSynapseIDs!=NULL)
     free(info->activeSynapseIDs);
@@ -200,6 +203,7 @@ void deleteSegmentUpdateInfo(SegmentUpdateInfo* info) {
  * Create new synapse connections to the segment to be updated using
  * the set of learning cells in this update info.
  */
+#pragma acc routine
 void createSynapsesToLearningCells(SegmentUpdateInfo* info, Segment* seg) {
   /*info->numAddedSyns = info->numLearningCells;
   info->allocatedAddedSyns = info->numAddedSyns;
@@ -224,6 +228,7 @@ void createSynapsesToLearningCells(SegmentUpdateInfo* info, Segment* seg) {
  * @param info: the SegmenuUpdateInfo that defines the new segment.
  * @return the segment that was just created.
  */
+#pragma acc routine
 Segment* createCellSegmentFromInfo(SegmentUpdateInfo* info) {
   /*"seg->createSynapsesToLearningCells(..)"
   //Create numSynapses new synapses for this segment attached to the specified
@@ -238,6 +243,7 @@ Segment* createCellSegmentFromInfo(SegmentUpdateInfo* info) {
  * Update (increase or decrease based on whether the synapse is active)
  * all permanence values of each of the synapses in the specified set.
  */
+#pragma acc routine
 void updateInfoPermanences(SegmentUpdateInfo* info) {
   /*decrease all Segment synapses, then increase active's x2*/
   Segment* segment = &(info->cell->segments[info->segmentID]);
@@ -257,6 +263,7 @@ void updateInfoPermanences(SegmentUpdateInfo* info) {
  * Decrease the permanences of each of the synapses in the set of
  * active synapses that happen to be on this segment.
  */
+#pragma acc routine
 void decreaseInfoPermanences(SegmentUpdateInfo* info) {
   Segment* segment = &(info->cell->segments[info->segmentID]);
   int i;
@@ -272,6 +279,7 @@ void decreaseInfoPermanences(SegmentUpdateInfo* info) {
  * is true else decrease).  If the new synapses flag is set then add new synapses
  * to the segment or create a new segment entirely if no segment was assigned.
  */
+#pragma acc routine
 void applySegmentUpdates(SegmentUpdateInfo* info, bool positiveReinforcement) {
   Segment* segment = NULL;
   if(info->segmentID >= 0)

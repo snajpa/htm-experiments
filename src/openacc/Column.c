@@ -12,7 +12,8 @@
 #include <stdio.h>
 #include "Region.h"
 
-float EMA_ALPHA = 0.005; /*Exponential Moving Average alpha value*/
+#define EMA_ALPHA 0.005 /*Exponential Moving Average alpha value*/
+//float EMA_ALPHA = 0.005; /*Exponential Moving Average alpha value*/
 
 /**
  *  Initialize the given Column to use the parent region at source row/column
@@ -151,6 +152,7 @@ Cell* getBestMatchingCell(Column* col, Segment** bestSegPtr, int* segmentID,
  * inputs, multiplied by its boost. If this value is below minOverlap, we set the
  * overlap score to zero.
  */
+#pragma acc routine
 void computeOverlap(Column* col) {
   /*Calculate number of active synapses on the proximal segment*/
   processSegment(col->proximalSegment);
@@ -169,7 +171,8 @@ void computeOverlap(Column* col) {
  * For winning columns, if a synapse is active, its permanence value is incremented,
  * otherwise it is decremented. Permanence values are constrained to be between 0 and 1.
  */
-void updateColumnPermanences(Column* col) {
+#pragma acc routine
+inline void updateColumnPermanences(Column* col) {
   /*consider all potential synapses, not just connected ones.  this will
    * allow disconnected synapses to regain a connected if they are part
    * of a group of synapses making the column active.*/
@@ -187,6 +190,7 @@ void updateColumnPermanences(Column* col) {
 /**
  * Increase the permanence value of every synapse in this column by the given amount.
  */
+#pragma acc routine
 void increasePermanences(Column* col, int amount) {
   int i;
   Segment* seg = col->proximalSegment;
@@ -199,6 +203,7 @@ void increasePermanences(Column* col, int amount) {
  * Computes a moving average of how often this column has been active
  * after inhibition.
  */
+#pragma acc routine
 void updateActiveDutyCycle(Column* col) {
   float newCycle = (1.0 - EMA_ALPHA) * col->activeDutyCycle;
   if(col->isActive)
@@ -212,6 +217,7 @@ void updateActiveDutyCycle(Column* col) {
  * Exponential moving average (EMA):
  * St = a * Yt + (1-a)*St-1
  */
+#pragma acc routine
 void updateOverlapDutyCycle(Column* col) {
   float newCycle = (1.0 - EMA_ALPHA) * col->overlapDutyCycle;
   if(col->overlap > col->region->minOverlap)
@@ -225,7 +231,8 @@ void updateOverlapDutyCycle(Column* col) {
  * The boost increases linearly once the column's activeDutyCycle starts
  * falling below its minDutyCycle.
  */
-float boostFunction(Column* col, float minDutyCycle) {
+#pragma acc routine
+inline float boostFunction(Column* col, float minDutyCycle) {
   if(col->activeDutyCycle > minDutyCycle)
     return 1.0;
   else if(col->activeDutyCycle==0.0)
@@ -242,6 +249,7 @@ float boostFunction(Column* col, float minDutyCycle) {
  * overlapDutyCycle), its permanence values are boosted (line 34-36).
  * Note: once learning is turned off, boost(c) is frozen.
  */
+#pragma acc routine
 void performBoosting(Column* col) {
   /*find extents of neighboring columns within inhibitionRadius*/
   Region* region = col->region;

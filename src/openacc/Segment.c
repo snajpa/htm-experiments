@@ -22,6 +22,7 @@
 /**
  * Initialize the Segment with the specified segment activation threshold.
  */
+#pragma acc routine
 void initSegment(Segment* seg, int segActiveThreshold) {
   seg->numSynapses = 0;
   seg->allocatedSynapses = 10;
@@ -42,6 +43,7 @@ void initSegment(Segment* seg, int segActiveThreshold) {
  * structure.  In this case, free the array of synapses that were
  * allocated.  This function does NOT free the Segment itself.
  */
+#pragma acc routine
 void deleteSegment(Segment* seg) {
   free(seg->synapses);
   seg->synapses = NULL;
@@ -54,6 +56,7 @@ void deleteSegment(Segment* seg) {
  * the current state will be reset to no cell activity by default until it
  * can be determined.
  */
+#pragma acc routine
 void nextSegmentTimeStep(Segment* seg) {
   seg->wasActive = seg->isActive;
   seg->isActive = false;
@@ -76,6 +79,7 @@ void nextSegmentTimeStep(Segment* seg) {
  * Region will call nextTimeStep() on all cells/segments to cache the
  * information as what was previously active.
  */
+#pragma acc routine
 void processSegment(Segment* seg) {
   /*cache the isConnected per synapse based on permanence, then
    *count the numbers of active synpases (both connected and total).*/
@@ -109,6 +113,7 @@ void processSegment(Segment* seg) {
  * @param steps the number of steps into the future an activation will occur
  * in if this segment becomes active.
  */
+#pragma acc routine
 void setNumPredictionSteps(Segment* seg, int steps) {
   if(steps < 1) steps = 1;
   if(steps > MAX_TIME_STEPS) steps = MAX_TIME_STEPS;
@@ -121,11 +126,13 @@ void setNumPredictionSteps(Segment* seg, int steps) {
  * @param inputSource: the input source of the synapse to create.
  * @return the newly created synapse.
  */
+#pragma acc routine
 Synapse* createSynapse(Segment* seg, Cell* inputSource, int initPerm) {
   /*if synapse array is full, need to increase capacity to add more*/
   if(seg->numSynapses == seg->allocatedSynapses) {
+    free(seg->synapses);
     int newAllocation = seg->allocatedSynapses*2;
-    seg->synapses = realloc(seg->synapses, newAllocation * sizeof(Synapse));
+    seg->synapses = (Synapse *)malloc(newAllocation * sizeof(Synapse));
     seg->allocatedSynapses = newAllocation;
   }
 
@@ -139,6 +146,7 @@ Synapse* createSynapse(Segment* seg, Cell* inputSource, int initPerm) {
  * Update (increase or decrease) all permanence values of each synapse on
  * this segment.
  */
+#pragma acc routine
 void updateSegmentPermanences(Segment* seg, bool increase) {
   int i;
   for(i=0; i<seg->numSynapses; ++i) {
@@ -154,6 +162,7 @@ void updateSegmentPermanences(Segment* seg, bool increase) {
  * This routine returns true if the number of connected synapses on this segment
  * that were active due to learning states at time t-1 is greater than activationThreshold.
  */
+#pragma acc routine
 bool wasSegmentActiveFromLearning(Segment* seg) {
   int i, c=0;
   for(i=0; i<seg->numSynapses; ++i) {

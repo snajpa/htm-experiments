@@ -27,10 +27,13 @@ typedef struct SegmentUpdateInfoType {
   int allocatedAddedSyns;*/
 } SegmentUpdateInfo;
 
+#pragma acc routine
 void randomSample(struct CellType** cells, int n, struct CellType** ssCells, int m);
 void initSegmentUpdateInfo(SegmentUpdateInfo* info, struct CellType* cell,
     int segmentID, bool previous, bool addNewSynapses);
+#pragma acc routine
 void deleteSegmentUpdateInfo(SegmentUpdateInfo* info);
+#pragma acc routine
 void applySegmentUpdates(SegmentUpdateInfo* info, bool positiveReinforcement);
 
 #endif /* SEGMENTUPDATEINFO_H_ */

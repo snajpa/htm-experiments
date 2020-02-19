@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <cuda.h>
 #include "Region.h"
 
 #define MAX_FILE_SIZE (0x100000)
@@ -89,7 +90,6 @@ void testOpenMP() {
   int N = 100000;
   unsigned long time = clock();
   for(i = 0; i < N; i++) {
-    /*#pragma omp parallel for*/
     for(j = 0; j < N; j++) {
       a *= 1.01;
       a -= 1.09;
@@ -772,6 +772,7 @@ void testRegionPerformanceDickens() {
 }
 
 int main(void) {
+  //cudaDeviceSetLimit(cudaLimitMallocHeapSize,8192ull * 1024ull * 1024ull);
   /* Run selected tests for HTM below */
   /*testOpenMP();*/
   testSynapse();

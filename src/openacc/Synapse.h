@@ -27,12 +27,18 @@ typedef struct SynapseType {
   bool wasConnected;
 } Synapse;
 
+#pragma acc routine
 void initSynapse(Synapse* syn, struct CellType* inputSource, int permanence);
 /*bool isSynapseConnected(Synapse* syn);*/
-bool isSynapseActive(Synapse* syn, bool connectedOnly);
-bool wasSynapseActive(Synapse* syn, bool connectedOnly);
-bool wasSynapseActiveFromLearning(Synapse* syn);
-void increaseSynapsePermanence(Synapse* syn, int amount);
-void decreaseSynapsePermanence(Synapse* syn, int amount);
+#pragma acc routine
+inline bool isSynapseActive(Synapse* syn, bool connectedOnly);
+#pragma acc routine
+inline bool wasSynapseActive(Synapse* syn, bool connectedOnly);
+#pragma acc routine
+inline bool wasSynapseActiveFromLearning(Synapse* syn);
+#pragma acc routine
+inline void increaseSynapsePermanence(Synapse* syn, int amount);
+#pragma acc routine
+inline void decreaseSynapsePermanence(Synapse* syn, int amount);
 
 #endif /* SYNAPSE_H_ */

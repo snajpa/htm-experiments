@@ -160,11 +160,13 @@ void nextCellTimeStep(Cell* cell) {
  *  @param learningCells: the set of available learning cells to add to the segment.
  *  @return the segment that was just created.
  */
+#pragma acc routine
 Segment* createCellSegment(Cell* cell) {
   /*if segment array is full, need to increase capacity to add more*/
   if(cell->numSegments == cell->allocatedSegments) {
+    free(cell->segments);
     int newAllocation = cell->allocatedSegments*2;
-    cell->segments = realloc(cell->segments, newAllocation * sizeof(Segment));
+    cell->segments = malloc(newAllocation * sizeof(Segment));
     cell->allocatedSegments = newAllocation;
   }
 
@@ -251,6 +253,7 @@ SegmentUpdateInfo* updateSegmentActiveSynapses(Cell* cell, bool previous,
  * count of initialPerm. These new synapses are randomly chosen from the
  * set of all cells that have learnState output = 1 at time step t.
  */
+#pragma acc routine
 void applyCellSegmentUpdates(Cell* cell, bool positiveReinforcement) {
   int i;
   for(i=0; i<cell->numSegUpdates; ++i) {

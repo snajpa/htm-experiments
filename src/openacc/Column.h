@@ -45,8 +45,11 @@ void deleteColumn(Column* col);
 void nextColumnTimeStep(Column* col);
 Cell* getBestMatchingCell(Column* col, Segment** bestSegPtr, int* segmentID,
                           int numPredictionSteps, bool previous);
+#pragma acc routine
 void computeOverlap(Column* col);
-void updateColumnPermanences(Column* col);
+#pragma acc routine
+inline void updateColumnPermanences(Column* col);
+#pragma acc routine
 void performBoosting(Column* col);
 
 #endif /* COLUMN_H_ */

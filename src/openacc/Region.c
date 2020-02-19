@@ -596,24 +596,28 @@ bool isWithinKthScore(Region* region, Column* col, int k) {
  * Note: once learning is turned off, boost(c) is frozen.
  * Finally at the end of Phase 3 the inhibition radius is recomputed (line 38).
  */
-inline void performSpatialPooling(Region* region) {
+void performSpatialPooling(Region* region) {
   int i;
   /*If hardcoded, we assume the input bits correspond directly to active columns*/
   if(region->spatialHardcoded) {
+    #pragma acc loop independent
     for(i=0; i<region->numCols; ++i)
       region->columns[i].isActive = region->inputData[i]==1;
     return;
   }
 
   /*First toggle isActive flag per input cell based on state of data array*/
+  #pragma acc loop independent
   for(i=0; i<region->nInput; ++i)
     region->inputCells[i].isActive = region->inputData[i]==1;
 
   /*Phase 1: Compute Column Input Overlaps*/
+  #pragma acc loop independent
   for(i=0; i<region->numCols; ++i)
     computeOverlap(&(region->columns[i]));
 
   /*Phase 2: Compute Active Columns (Winners after inhibition)*/
+  #pragma acc loop independent
   for(i=0; i<region->numCols; ++i) {
     Column* col = &(region->columns[i]);
     col->isActive = false;
@@ -675,7 +679,7 @@ inline void performSpatialPooling(Region* region) {
  * cell ever stops predicting for any reason, we negatively reinforce the segments
  * (lines 58-60).
  */
-inline void performTemporalPooling(Region* region) {
+void performTemporalPooling(Region* region) {
   /*Phase 1: Compute cell active states and segment learning updates
   //18. for c in activeColumns(t)
   //19.
@@ -702,6 +706,7 @@ inline void performTemporalPooling(Region* region) {
   //40.     sUpdate.sequenceSegment = true
   //41.     segmentUpdateList.add(sUpdate)*/
   int i;
+  #pragma acc loop independent
   for(i=0; i<region->numCols; ++i) {
     Column* col = &(region->columns[i]);
     if(col->isActive) {
@@ -775,6 +780,7 @@ inline void performTemporalPooling(Region* region) {
   //51.       predUpdate = getSegmentActiveSynapses(
   //52.                                   c, i, predSegment, t-1, true)
   //53.       segmentUpdateList.add(predUpdate)*/
+  #pragma acc loop independent
   for(i=0; i<region->numCols; ++i) {
     int c,s;
     for(c=0; c<region->columns[i].numCells; ++c) {
@@ -828,6 +834,7 @@ inline void performTemporalPooling(Region* region) {
   //60.     segmentUpdateList(c, i).delete()*/
   if(!region->temporalLearning)
     return;
+  #pragma acc loop independent
   for(i=0; i<region->numCols; ++i) {
     int c;
     for(c=0; c<region->columns[i].numCells; ++c) {
@@ -846,21 +853,19 @@ inline void performTemporalPooling(Region* region) {
  * Run the Region through a single time step.  It is assumed the state of
  * the input data array has been populated prior to calling this function.
  */
-inline void runOnce(Region* region) {
+void runOnce(Region* region) {
   /*  if(DEBUG && _iters==0) {
   //    start_time = microsec_clock::universal_time();
   //    std::cout << "Max Threads: " << boost::thread::hardware_concurrency() << "\n";
   //  }*/
   int i;
-  #pragma acc kernels
-  {
-  #pragma omp parallel for
+  #pragma acc loop independent
   for(i=0; i<region->numCols; ++i)
     nextColumnTimeStep(&(region->columns[i]));
 
   performSpatialPooling(region);
   performTemporalPooling(region);
-  }
+
   /*++_iters;
   //  if(DEBUG && _iters % 1000 == 0) {
   //    time_duration taken = microsec_clock::universal_time() - start_time;

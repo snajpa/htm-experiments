@@ -9,6 +9,7 @@
  * are encountered.
  */
 
+#include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
@@ -553,8 +554,8 @@ void testRegionSpatialPooling1() {
 void testRegionPerformance(unsigned int nunique) {
   printf("testRegionPerformance(%i)...\n", nunique);
 
-  int nx = 25;
-  int ny = 25;
+  int nx = 32;
+  int ny = 32;
   int localityRadius = 0;
   int cellsPerCol = 4;
   int segActiveThreshold = 3;
@@ -602,7 +603,7 @@ void testRegionPerformance(unsigned int nunique) {
 
     if(i % 1000 == 0) {
       unsigned long elapse = clock() - time;
-      double oelapse = 1;/*omp_get_wtime() - otime;*/
+      double oelapse = omp_get_wtime() - otime;
       printf("iters %i: time %f (%lu)\n", i, oelapse, elapse/1000);
 
       /*print how many segments of particular counts that exist*/
@@ -617,7 +618,7 @@ void testRegionPerformance(unsigned int nunique) {
       printf("acc  %f   %f\n", acc[0], acc[1]);*/
 
       time = clock();
-      /*otime = omp_get_wtime();*/
+      otime = omp_get_wtime();
     }
   }
 
@@ -777,8 +778,8 @@ int main(void) {
   testSegment();
   testRegion1();
   testRegion2();
-  testRegionSpatialPooling1();
-  /*testRegionPerformance(10);*/
+  //testRegionSpatialPooling1();
+  testRegionPerformance(10);
   /*testRegionPerformance(0);*/
   /*testRegionPerformanceDickens();*/
   testRegion3();
